@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>CyberQalqan | 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: radial-gradient(circle at center, #0a3d2e 0%, #0d1117 100%);
+            color: #e6edf3; font-family: 'Segoe UI', sans-serif; min-height: 100vh;
+        }
+        .cyber-card { 
+            background: rgba(22, 27, 34, 0.8); border: 1px solid #30363d;
+            border-radius: 15px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .cyber-card:hover { border-color: #58a6ff; }
+        .btn-cyber { background: #238636; color: white; border: none; font-weight: bold; padding: 10px 20px; }
+        .btn-gen { border: 1px solid #58a6ff; color: #58a6ff; background: transparent; }
+        .btn-gen:hover { background: #58a6ff; color: white; }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-success fw-bold">CyberQalqan</h1>
+        <p class="lead text-secondary">Ақпараттық қауіпсіздікті талдау және нығайту платформасы</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="cyber-card h-100">
+                <h3 class="text-info mb-4">Analyzer (Талдау)</h3>
+                <label class="mb-2">Құпия сөзді тексеру:</label>
+                <input type="password" id="pwd" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Құпия сөз жазыңыз...">
+                
+                <label class="mb-2">Сілтемені тексеру:</label>
+                <input type="text" id="url" class="form-control bg-dark text-white border-secondary mb-4" placeholder="https://...">
+                
+                <button onclick="analyze()" class="btn btn-cyber w-100">Жүйелік талдау жасау</button>
+                <div id="res" class="mt-4 p-2 rounded" style="background: rgba(0,0,0,0.2)"></div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="cyber-card h-100">
+                <h3 class="text-warning mb-4">Password Generator</h3>
+                <p>Егер құпия сөзіңіз әлсіз болса, жүйенің криптографиялық мықты нұсқасын қолданыңыз:</p>
+                <div class="input-group mb-3 mt-4">
+                    <input type="text" id="genPwd" class="form-control bg-dark text-white border-secondary" readonly>
+                    <button onclick="generate()" class="btn btn-gen">Жаңасын жасау</button>
+                </div>
+                <div class="alert alert-info bg-dark text-info border-secondary mt-5 small">
+                    Кеңес: Құпия сөзде кемінде бір бас әріп, сан және арнайы таңба (!@#) болуы тиіс.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function analyze() {
+        const password = document.getElementById('pwd').value;
+        const url = document.getElementById('url').value;
+        const response = await fetch('/analyze', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({password, url})
+        });
+        const d = await response.json();
+        document.getElementById('res').innerHTML = `
+            <div class="mb-2">Құпия сөз: <span style="color:${d.pwd_color}">${d.pwd_status}</span></div>
+            <div>Сілтеме деңгейі: <span style="color:${d.url_color}">${d.url_status}</span></div>
+        `;
+    }
+    async function generate() {
+        const response = await fetch('/generate_password', {method: 'POST'});
+        const d = await response.json();
+        document.getElementById('genPwd').value = d.password;
+    }
+</script>
+</body>
+</html>
