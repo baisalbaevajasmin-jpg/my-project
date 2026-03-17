@@ -81,26 +81,40 @@
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Форманы немесе батырманы табу
-    const cyberBtn = document.querySelector('.btn-cyber');
-    const passwordInput = document.querySelector('input[type="password"]');
+    // Батырма мен нәтиже шығатын жерді табамыз
+    const genBtn = document.querySelector('.btn-cyber'); 
+    
+    // Егер нәтиже шығатын жер болмаса, оны батырмадан кейін жасап аламыз
+    let resultDiv = document.querySelector('#result');
+    if (!resultDiv) {
+        resultDiv = document.createElement('div');
+        resultDiv.id = 'result';
+        resultDiv.style.marginTop = '20px';
+        resultDiv.style.padding = '15px';
+        resultDiv.style.background = 'rgba(0, 255, 0, 0.1)';
+        resultDiv.style.border = '1px solid #00ff00';
+        resultDiv.style.borderRadius = '10px';
+        resultDiv.style.color = '#00ff00';
+        genBtn.parentNode.appendChild(resultDiv);
+    }
 
-    if (cyberBtn) {
-        cyberBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // Беттің қайта жүктелуін тоқтатады
+    if (genBtn) {
+        genBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            const password = passwordInput ? passwordInput.value : "";
-
-            // Бұл жерде логиканы тексереміз (мысалы, пароль 12345 болса)
-            if (password === "12345") {
-                alert("Қолжетімділік рұқсат етілді! CyberQalqan қорғанысы белсенді.");
-                // Осы жерде басқа бетке жіберуге де болады:
-                // window.location.href = "success.html"; 
-            } else if (password === "") {
-                alert("Өтініш, парольді енгізіңіз.");
-            } else {
-                alert("Қате пароль! Қайта тексеріңіз.");
+            // Пароль генерациялау логикасы
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            let newPassword = "";
+            for (let i = 0; i < 12; i++) {
+                newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
             }
+
+            // Экранға шығару
+            resultDiv.innerHTML = `
+                <strong>Генерацияланған пароль:</strong><br>
+                <span style="font-size: 1.5rem; letter-spacing: 2px;">${newPassword}</span><br>
+                <small style="color: #888;">Қорғаныс деңгейі: Өте жоғары</small>
+            `;
         });
     }
 });
